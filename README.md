@@ -45,6 +45,12 @@ rig rstudio 4.3-arm64
 - https://github.com/r-lib/rig/issues/173
 - https://github.com/r-lib/rig/issues/174
 - https://brocktibert.com/post/r-dataframe-to-json/
+- https://observablehq.com/plot/marks/area#areaY
+- https://observablehq.com/plot/interactions/crosshair
+- https://github.com/observablehq/plot/blob/v0.6.11/test/plots/crosshair.ts#L25
+- https://github.com/observablehq/plot/blob/v0.6.11/src/marks/crosshair.js#L20
+- https://github.com/observablehq/plot/blob/v0.6.11/src/interactions/pointer.js
+- https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerenter_event
 
 ### Commands
 
@@ -54,6 +60,14 @@ conda deactivate && conda env remove --name try-ggpointdensity
 
 ```bash
 R -e 'IRkernel::installspec()'
+```
+
+```bash
+npm create vite@latest pointdensity-demo -- --template vue-ts
+```
+
+```bash
+npm create vue@latest pointdensity-demo
 ```
 
 ### Snippets
