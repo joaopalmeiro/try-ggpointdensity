@@ -53,4 +53,7 @@ head(layer_data(plot = last_plot()), 5)
 
 output_filename <- paste0("data_", first_n_points + second_n_points, ".json")
 output_filename
-write_json(dat, output_filename, pretty = FALSE)
+output_path <- file.path("demo", "src", output_filename)
+output_path
+
+write_json(dat, output_path, pretty = FALSE)
