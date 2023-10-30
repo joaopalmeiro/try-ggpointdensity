@@ -7,6 +7,7 @@ library(dplyr)
 library(tibble)
 library(ggpointdensity)
 library(jsonlite)
+library(MASS)
 
 # install_version("styler", version = "1.10.2")
 # install_version("ggplot2", version = "3.4.4")
@@ -57,3 +58,9 @@ output_path <- file.path("demo", "src", output_filename)
 output_path
 
 write_json(dat, output_path, pretty = FALSE)
+
+kde_output <- kde2d(dat$x, dat$y)
+# kde_output
+kde_output$x
+kde_output$y
+kde_output$z

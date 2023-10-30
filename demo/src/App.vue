@@ -6,6 +6,7 @@
 
 import { extent } from "d3-array";
 import { scaleLinear } from "d3-scale";
+import { density2d } from "fast-kde";
 
 import data from "./data_100.json";
 
@@ -24,7 +25,24 @@ const [yMin = 0, yMax = 0] = extent(data, yAccessor);
 const xScale = scaleLinear().domain([xMin, xMax]).range([0, WIDTH]).nice();
 const yScale = scaleLinear().domain([yMin, yMax]).range([HEIGHT, 0]).nice();
 
+// https://github.com/uwdata/fast-kde#2d-density-estimation
+// 256 * 256 = 65536
+// https://github.com/LKremer/ggpointdensity/blob/a202ac73d1e18facb57acab8ea0a9b00680518d4/R/geom_pointdensity.R#L138
+// https://rdrr.io/cran/MASS/man/kde2d.html
+// https://d3js.org/d3-array/bisect
+// https://stackoverflow.com/questions/43359623/javascripts-equivalent-of-rs-findinterval-or-pythons-bisect-bisect-left
+// https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/findInterval
+
+// const bins = [100, 100]
+const bins = [25, 25]
+// const bins = [2, 2];
+
+const density = density2d(data, { x: xAccessor, y: yAccessor, bins });
+const densityPoints = [...density];
+
 // console.log(data);
+console.log(densityPoints);
+// console.log(density.grid());
 </script>
 
 <template>
