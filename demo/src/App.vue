@@ -32,6 +32,7 @@ const yScale = scaleLinear().domain([yMin, yMax]).range([HEIGHT, 0]).nice();
 // https://d3js.org/d3-array/bisect
 // https://stackoverflow.com/questions/43359623/javascripts-equivalent-of-rs-findinterval-or-pythons-bisect-bisect-left
 // https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/findInterval
+// https://observablehq.com/@uwdata/fast-kde#cell-61
 
 // const bins = [100, 100]
 const bins = [25, 25]
