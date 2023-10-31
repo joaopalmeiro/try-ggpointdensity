@@ -1,0 +1,28 @@
+# https://github.com/joaopalmeiro/social-media-icons/blob/main/.github/workflows/deploy-docs.yml
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsworking-directory
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#defaultsrun
+# https://how.wtf/run-workflow-step-or-job-based-on-file-changes-github-actions.html
+
+name: Deploy demo to Surge
+
+on:
+  push:
+    paths:
+      - "demo/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: demo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: "demo/.nvmrc"
+      - run: npm install
+      - run: npm run build
+      - run: npm install --global surge
+      - run: surge dist https://ggpointdensity-demo.surge.sh/ --token ${{secrets.SURGE_TOKEN}}
