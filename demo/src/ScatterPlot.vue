@@ -4,6 +4,7 @@ import type { ScaleSequential } from "d3-scale";
 import { scaleLinear, scaleSequential } from "d3-scale";
 import { interpolateViridis } from "d3-scale-chromatic";
 import { density2d } from "fast-kde";
+import { ref } from "vue";
 
 import { BINS, HEIGHT, PAD, RADIUS, WIDTH } from "./constants";
 import ContinuousColorLegend from "./ContinuousColorLegend.vue";
@@ -41,6 +42,9 @@ const getDensity = (
   return zAccessor(densityPoint);
 };
 
+// https://vuejs.org/guide/essentials/reactivity-fundamentals.html#script-setup
+const valueToHighlight = ref<number>();
+
 const xAccessor: Accessor = (d) => d.x;
 const yAccessor: Accessor = (d) => d.y;
 const zAccessor: Accessor<DensityDatum> = (d) => d.z;
@@ -74,10 +78,14 @@ const colorScale: ScaleSequential<string> = scaleSequential(
 
 const xDensity: number[] = [...new Set(densityPoints.map(xAccessor))];
 const yDensity: number[] = [...new Set(densityPoints.map(yAccessor))];
+
+const setValueToHighlight = (newValue?: number): void => {
+  valueToHighlight.value = newValue;
+};
 </script>
 
 <template>
-  <div :style="{ display: 'flex', 'flex-direction': 'column', gap: '2rem' }">
+  <div :style="{ display: 'flex', 'flex-direction': 'column', gap: '1rem' }">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       :viewBox="`0 0 ${WIDTH} ${HEIGHT}`"
@@ -106,10 +114,26 @@ const yDensity: number[] = [...new Set(densityPoints.map(yAccessor))];
           stroke="white"
           stroke-width="0.5px"
           paint-order="stroke"
+          @mouseenter="
+            setValueToHighlight(
+              getDensity(
+                xAccessor(datum),
+                yAccessor(datum),
+                densityPoints,
+                xDensity,
+                yDensity,
+                zAccessor,
+              ),
+            )
+          "
+          @mouseleave="setValueToHighlight(undefined)"
         />
       </g>
     </svg>
 
-    <ContinuousColorLegend :colorScale="colorScale" />
+    <ContinuousColorLegend
+      :colorScale="colorScale"
+      :valueToHighlight="valueToHighlight"
+    />
   </div>
 </template>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type { ScaleSequential } from "d3-scale";
+import { format } from "d3-format";
+import type { ScaleLinear, ScaleSequential } from "d3-scale";
+import { scaleLinear } from "d3-scale";
 import type { PropType } from "vue";
 import { computed } from "vue";
-import { format } from "d3-format";
 
 import { LEGEND_AXIS_HEIGHT, LEGEND_HEIGHT, LEGEND_WIDTH } from "./constants";
 
@@ -37,10 +38,14 @@ const props = defineProps({
     type: Function as PropType<ScaleSequential<string>>,
     required: true,
   },
+  valueToHighlight: {
+    type: Number as PropType<number | undefined>,
+    default: undefined,
+  },
 });
 
 const HEIGHT = computed<number>(() => {
-  return LEGEND_HEIGHT + LEGEND_AXIS_HEIGHT;
+  return LEGEND_HEIGHT + LEGEND_AXIS_HEIGHT * 2;
 });
 
 // https://observablehq.com/@d3/color-legend
@@ -82,7 +87,37 @@ const endLabel = computed<string>(() => {
 const rampData = computed<RampData>(() => {
   return ramp(props.colorScale.interpolator());
 });
-// console.log(rampData.value);
+
+const highlightScale = computed<ScaleLinear<number, number>>(() => {
+  const colorDomain = props.colorScale.domain();
+  const highlightDomain = isReversed.value
+    ? [colorDomain[1], colorDomain[0]]
+    : colorDomain;
+
+  return scaleLinear().domain(highlightDomain).range([0, LEGEND_WIDTH]).nice();
+});
+
+const highlightTextAnchor = computed<string>(() => {
+  if (props.valueToHighlight) {
+    const half = LEGEND_WIDTH / 2;
+
+    return highlightScale.value(props.valueToHighlight) > half
+      ? "end"
+      : "start";
+  }
+
+  return "start";
+});
+
+const xHighlight = computed<number | undefined>(() => {
+  if (props.valueToHighlight) {
+    const offset = 2;
+    const signedOffset =
+      highlightTextAnchor.value === "start" ? offset : -offset;
+
+    return highlightScale.value(props.valueToHighlight) + signedOffset;
+  }
+});
 </script>
 
 <template>
@@ -108,32 +143,54 @@ const rampData = computed<RampData>(() => {
       </linearGradient>
     </defs>
 
-    <rect
-      :width="`${LEGEND_WIDTH}px`"
-      :height="`${LEGEND_HEIGHT}px`"
-      fill="url(#continuousColorLegend)"
-    />
+    <g :transform="`translate(0, ${LEGEND_AXIS_HEIGHT})`">
+      <rect
+        :width="`${LEGEND_WIDTH}px`"
+        :height="`${LEGEND_HEIGHT}px`"
+        fill="url(#continuousColorLegend)"
+      />
 
-    <g>
-      <text
-        dominant-baseline="text-before-edge"
-        :y="`${LEGEND_HEIGHT}px`"
-        text-anchor="start"
-        font-size="12px"
-        font-family="Arial"
-      >
-        {{ startLabel }}
-      </text>
-      <text
-        dominant-baseline="text-before-edge"
-        :x="`${LEGEND_WIDTH}px`"
-        :y="`${LEGEND_HEIGHT}px`"
-        text-anchor="end"
-        font-size="12px"
-        font-family="Arial"
-      >
-        {{ endLabel }}
-      </text>
+      <g>
+        <text
+          dominant-baseline="text-before-edge"
+          :y="`${LEGEND_HEIGHT}px`"
+          text-anchor="start"
+          font-size="12px"
+          font-family="Arial"
+        >
+          {{ startLabel }}
+        </text>
+        <text
+          dominant-baseline="text-before-edge"
+          :x="`${LEGEND_WIDTH}px`"
+          :y="`${LEGEND_HEIGHT}px`"
+          text-anchor="end"
+          font-size="12px"
+          font-family="Arial"
+        >
+          {{ endLabel }}
+        </text>
+      </g>
+
+      <g v-if="valueToHighlight">
+        <line
+          :x1="highlightScale(valueToHighlight)"
+          :y1="-LEGEND_AXIS_HEIGHT"
+          :x2="highlightScale(valueToHighlight)"
+          :y2="LEGEND_HEIGHT"
+          stroke="black"
+        />
+        <text
+          dominant-baseline="text-after-edge"
+          :x="xHighlight"
+          y="0px"
+          font-size="12px"
+          font-family="Arial"
+          :text-anchor="highlightTextAnchor"
+        >
+          {{ formatter(valueToHighlight) }}
+        </text>
+      </g>
     </g>
   </svg>
 </template>
