@@ -9,7 +9,8 @@ import { scaleLinear, scaleSequential } from "d3-scale";
 import { interpolateViridis } from "d3-scale-chromatic";
 import { density2d } from "fast-kde";
 
-import data from "./data_100.json";
+// import data from "./data_100.json";
+import data from "./data_1000.json";
 
 type DataDatum = (typeof data)[number];
 type DensityDatum = DataDatum & {

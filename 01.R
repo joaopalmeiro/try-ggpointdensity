@@ -21,8 +21,10 @@ set.seed(1234)
 
 # first_n_points <- 7000
 # second_n_points <- 3000
-first_n_points <- 70
-second_n_points <- 30
+# first_n_points <- 70
+# second_n_points <- 30
+first_n_points <- 700
+second_n_points <- 300
 
 dat <- bind_rows(
   tibble(
