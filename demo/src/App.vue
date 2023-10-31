@@ -169,6 +169,9 @@ const yDensity: number[] = [...new Set(densityPoints.map(yAccessor))];
             ),
           )
         "
+        stroke="white"
+        stroke-width="0.5px"
+        paint-order="stroke"
       />
     </g>
   </svg>
