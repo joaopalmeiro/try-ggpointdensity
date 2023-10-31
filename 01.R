@@ -9,6 +9,8 @@ library(ggpointdensity)
 library(jsonlite)
 library(MASS)
 
+packageVersion("MASS")
+
 # install_version("styler", version = "1.10.2")
 # install_version("ggplot2", version = "3.4.4")
 # install_version("tibble", version = "3.2.1")
@@ -34,6 +36,7 @@ dat <- bind_rows(
     # group = "bar"
   )
 )
+head(dat, 5)
 
 # https://ggplot2.tidyverse.org/reference/scale_viridis.html
 # https://github.com/LKremer/ggpointdensity/tree/02f3ab24eb22e3e34294baeca23a8998db43be70

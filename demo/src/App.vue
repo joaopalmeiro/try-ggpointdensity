@@ -35,15 +35,27 @@ const yScale = scaleLinear().domain([yMin, yMax]).range([HEIGHT, 0]).nice();
 // https://observablehq.com/@uwdata/fast-kde#cell-61
 
 // const bins = [100, 100]
-const bins = [25, 25]
+const bins = [25, 25];
 // const bins = [2, 2];
 
 const density = density2d(data, { x: xAccessor, y: yAccessor, bins });
 const densityPoints = [...density];
 
 // console.log(data);
-console.log(densityPoints);
+// console.log(densityPoints);
 // console.log(density.grid());
+
+// R (w/ MASS::bandwidth.nrd): 1.839297 15.182454
+// fast-kde: 0.45982345378511363 3.7956138170092566
+// https://github.com/uwdata/fast-kde/blob/01c7eaff9a5901206f8ebe811b8c6a41f9688f7e/src/nrd.js#L3
+// https://github.com/cran/MASS/blob/7.3-60/R/hist.scott.R#L38
+// https://en.wikipedia.org/wiki/Histogram (Scott's normal reference rule)
+// console.log(
+//   nrd(data, xAccessor),
+//   nrd(data, yAccessor),
+//   nrd(data, xAccessor) * 4,
+//   nrd(data, yAccessor) * 4,
+// );
 </script>
 
 <template>
