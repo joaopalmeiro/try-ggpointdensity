@@ -3,6 +3,7 @@ import { bisectRight, extent } from "d3-array";
 import type { ScaleSequential } from "d3-scale";
 import { scaleLinear, scaleSequential } from "d3-scale";
 import { interpolateViridis } from "d3-scale-chromatic";
+// @ts-ignore
 import { density2d } from "fast-kde";
 import { ref } from "vue";
 
