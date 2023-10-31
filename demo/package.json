@@ -27,12 +27,14 @@
   "dependencies": {
     "d3-array": "3.2.4",
     "d3-scale": "4.0.2",
+    "d3-scale-chromatic": "3.0.0",
     "fast-kde": "0.2.1",
     "vue": "3.3.7"
   },
   "devDependencies": {
     "@types/d3-array": "3.0.9",
     "@types/d3-scale": "4.0.6",
+    "@types/d3-scale-chromatic": "3.0.1",
     "@vitejs/plugin-vue": "4.4.0",
     "create-vite-tsconfigs": "0.2.0",
     "npm-run-all2": "6.1.1",

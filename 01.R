@@ -51,7 +51,8 @@ head(layer_data(plot = last_plot()), 5)
 adjust <- 1
 ggplot(data = dat, mapping = aes(x = x, y = y)) +
   geom_pointdensity(method = "kde2d", adjust = adjust) +
-  scale_colour_viridis_c()
+  scale_colour_viridis_c(direction = -1)
+# scale_colour_viridis_c()
 
 # https://github.com/LKremer/ggpointdensity/blob/a202ac73d1e18facb57acab8ea0a9b00680518d4/R/geom_pointdensity.R#L153
 # layer_data(plot = last_plot())
@@ -97,7 +98,8 @@ findInterval(dat$x, dens$x)
 ix <- findInterval(dat$x, dens$x)
 iy <- findInterval(dat$y, dens$y)
 ii <- cbind(ix, iy)
-# ii
+ii[1, ]
+
 dat$density <- dens$z[ii]
 dat
 head(layer_data(plot = last_plot()), 1)
