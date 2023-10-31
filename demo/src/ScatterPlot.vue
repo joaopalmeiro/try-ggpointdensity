@@ -79,6 +79,19 @@ const colorScale: ScaleSequential<string> = scaleSequential(
 const xDensity: number[] = [...new Set(densityPoints.map(xAccessor))];
 const yDensity: number[] = [...new Set(densityPoints.map(yAccessor))];
 
+const dataToPlot: DensityDatum[] = data.map((d: DataDatum) => ({
+  ...d,
+  z: getDensity(
+    xAccessor(d),
+    yAccessor(d),
+    densityPoints,
+    xDensity,
+    yDensity,
+    zAccessor,
+  ),
+}));
+// console.log(dataToPlot);
+
 const setValueToHighlight = (newValue?: number): void => {
   valueToHighlight.value = newValue;
 };
@@ -94,38 +107,16 @@ const setValueToHighlight = (newValue?: number): void => {
     >
       <g>
         <circle
-          v-for="datum in data"
+          v-for="datum in dataToPlot"
           :key="JSON.stringify(datum)"
           :cx="xScale(xAccessor(datum))"
           :cy="yScale(yAccessor(datum))"
           :r="`${RADIUS}px`"
-          :fill="
-            colorScale(
-              getDensity(
-                xAccessor(datum),
-                yAccessor(datum),
-                densityPoints,
-                xDensity,
-                yDensity,
-                zAccessor,
-              ),
-            )
-          "
+          :fill="colorScale(zAccessor(datum))"
           stroke="white"
           stroke-width="0.5px"
           paint-order="stroke"
-          @mouseenter="
-            setValueToHighlight(
-              getDensity(
-                xAccessor(datum),
-                yAccessor(datum),
-                densityPoints,
-                xDensity,
-                yDensity,
-                zAccessor,
-              ),
-            )
-          "
+          @mouseenter="setValueToHighlight(zAccessor(datum))"
           @mouseleave="setValueToHighlight(undefined)"
         />
       </g>
