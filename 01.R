@@ -45,10 +45,12 @@ ggplot(data = dat, mapping = aes(x = x, y = y)) +
 # layer_data(plot = last_plot())
 head(layer_data(plot = last_plot()), 5)
 
+adjust <- 1
 ggplot(data = dat, mapping = aes(x = x, y = y)) +
-  geom_pointdensity(method = "kde2d") +
+  geom_pointdensity(method = "kde2d", adjust = adjust) +
   scale_colour_viridis_c()
 
+# https://github.com/LKremer/ggpointdensity/blob/a202ac73d1e18facb57acab8ea0a9b00680518d4/R/geom_pointdensity.R#L153
 # layer_data(plot = last_plot())
 head(layer_data(plot = last_plot()), 5)
 
@@ -59,8 +61,42 @@ output_path
 
 write_json(dat, output_path, pretty = FALSE)
 
+# https://github.com/LKremer/ggpointdensity/blob/a202ac73d1e18facb57acab8ea0a9b00680518d4/R/geom_pointdensity.R#L120
 kde_output <- kde2d(dat$x, dat$y)
 # kde_output
 kde_output$x
 kde_output$y
 kde_output$z
+
+is.finite(dat$x)
+# is.finite(dat$y)
+
+finites <- is.finite(dat$x) & is.finite(dat$y)
+dat[finites, ]
+
+bandwidth.nrd(dat$x)
+bandwidth.nrd(dat$y)
+
+# n <- 5
+n <- 100
+h <- c(bandwidth.nrd(dat$x), bandwidth.nrd(dat$y)) * adjust
+h
+
+dens <- kde2d(dat$x, dat$y, n = n, h = h)
+dens
+
+head(dat$x, 5)
+dens$x
+# https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/findInterval
+# https://rdrr.io/cran/MASS/man/kde2d.html
+findInterval(dat$x, dens$x)
+
+ix <- findInterval(dat$x, dens$x)
+iy <- findInterval(dat$y, dens$y)
+ii <- cbind(ix, iy)
+# ii
+dat$density <- dens$z[ii]
+dat
+head(layer_data(plot = last_plot()), 1)
+
+dat$density / max(dat$density)
