@@ -11,6 +11,9 @@ import { density2d } from "fast-kde";
 import data from "./data_100.json";
 
 type Datum = (typeof data)[number];
+type DensityDatum = Datum & {
+  z: number;
+};
 
 const WIDTH: number = 300;
 const HEIGHT: number = WIDTH;
@@ -40,7 +43,7 @@ const bins = [25, 25];
 // const bins = [2, 2];
 
 const density = density2d(data, { x: xAccessor, y: yAccessor, bins });
-const densityPoints = [...density];
+const densityPoints: DensityDatum[] = [...density];
 
 // console.log(data);
 // console.log(densityPoints);

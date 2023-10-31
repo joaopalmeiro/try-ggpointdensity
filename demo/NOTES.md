@@ -1,5 +1,7 @@
 # Notes
 
+- https://www.totaltypescript.com/type-vs-interface-which-should-you-use
+
 ## Commands
 
 ```bash
