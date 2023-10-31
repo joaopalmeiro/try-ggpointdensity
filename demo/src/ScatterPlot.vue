@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { bisectRight, extent } from "d3-array";
+import type { ScaleSequential } from "d3-scale";
 import { scaleLinear, scaleSequential } from "d3-scale";
 import { interpolateViridis } from "d3-scale-chromatic";
 import { density2d } from "fast-kde";
 
 import { BINS, HEIGHT, PAD, RADIUS, WIDTH } from "./constants";
+import ContinuousColorLegend from "./ContinuousColorLegend.vue";
 // import data from "./data_100.json";
 import data from "./data_1000.json";
 
@@ -64,7 +66,10 @@ const [zMin = 0, zMax = 0] = extent(densityPoints, zAccessor);
 const colorDomain = [zMax, zMin];
 // import { nice } from "d3-array";
 // const colorDomain = nice(zMin, zMax, 10);
-const colorScale = scaleSequential(colorDomain, interpolateViridis);
+const colorScale: ScaleSequential<string> = scaleSequential(
+  colorDomain,
+  interpolateViridis,
+);
 // console.log([zMin, zMax], colorDomain);
 
 const xDensity: number[] = [...new Set(densityPoints.map(xAccessor))];
@@ -72,35 +77,39 @@ const yDensity: number[] = [...new Set(densityPoints.map(yAccessor))];
 </script>
 
 <template>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    :viewBox="`0 0 ${WIDTH} ${HEIGHT}`"
-    :width="`${WIDTH}px`"
-    :height="`${HEIGHT}px`"
-  >
-    <g>
-      <circle
-        v-for="datum in data"
-        :key="JSON.stringify(datum)"
-        :cx="xScale(xAccessor(datum))"
-        :cy="yScale(yAccessor(datum))"
-        :r="`${RADIUS}px`"
-        :fill="
-          colorScale(
-            getDensity(
-              xAccessor(datum),
-              yAccessor(datum),
-              densityPoints,
-              xDensity,
-              yDensity,
-              zAccessor,
-            ),
-          )
-        "
-        stroke="white"
-        stroke-width="0.5px"
-        paint-order="stroke"
-      />
-    </g>
-  </svg>
+  <div :style="{ display: 'flex', 'flex-direction': 'column', gap: '2rem' }">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      :viewBox="`0 0 ${WIDTH} ${HEIGHT}`"
+      :width="`${WIDTH}px`"
+      :height="`${HEIGHT}px`"
+    >
+      <g>
+        <circle
+          v-for="datum in data"
+          :key="JSON.stringify(datum)"
+          :cx="xScale(xAccessor(datum))"
+          :cy="yScale(yAccessor(datum))"
+          :r="`${RADIUS}px`"
+          :fill="
+            colorScale(
+              getDensity(
+                xAccessor(datum),
+                yAccessor(datum),
+                densityPoints,
+                xDensity,
+                yDensity,
+                zAccessor,
+              ),
+            )
+          "
+          stroke="white"
+          stroke-width="0.5px"
+          paint-order="stroke"
+        />
+      </g>
+    </svg>
+
+    <ContinuousColorLegend :colorScale="colorScale" />
+  </div>
 </template>

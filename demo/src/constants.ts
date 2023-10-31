@@ -18,3 +18,7 @@ export const BINS: [number, number] = [100, 100];
 // export const BINS = [2, 2];
 
 export const PAD: number = 0;
+
+export const LEGEND_WIDTH: number = 300;
+export const LEGEND_HEIGHT: number = 20;
+export const LEGEND_AXIS_HEIGHT: number = 13.5;
